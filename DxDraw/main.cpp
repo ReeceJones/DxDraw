@@ -5,27 +5,27 @@
 
 dx_11_renderer dx11;
 
-dx_vertex tri_verts[] =
-{
-	/*x, y, z, r, g, b, a*/
-	{-1, 0, 1.f, 1, 0, 0, 1.f },
-	{ -0.75f, 1, 1.f, 0, 1, 0, 1.f },
-	{ -0.5f, 0, 1.f, 0, 0, 1, 1.f },
-};
+//dx_vertex tri_verts[] =
+//{
+//	/*x, y, z, r, g, b, a*/
+//	{-1, 0, 1.f, 1, 0, 0, 1.f },
+//	{ -0.75f, 1, 1.f, 0, 1, 0, 1.f },
+//	{ -0.5f, 0, 1.f, 0, 0, 1, 1.f },
+//};
+//
+///*use in mulitples of 3; d3d11 renders using triangles, ie: square made of 2 triangles*/
+////TODO: point rendering
+//dx_vertex hex_verts[6] =
+//{
+//	{ -0.5f, 0.5f, 1.f, 0.f, 0.f },
+//	{ 0.5f, -0.5f, 0.f, 0.f, 1.f },
+//	{ -0.5f, -0.5f, 0.f, 0.f, 0.f },
+//	{ -0.5f, 0.5f, 1.f, 0.f, 0.f },
+//	{ 0.5f, 0.5f, 0.f, 1.f, 0.f },
+//	{ 0.5f, -0.5f, 0.f, 0.f, 1.f }
+//};
 
-/*use in mulitples of 3; d3d11 renders using triangles, ie: square made of 2 triangles*/
-//TODO: point rendering
-dx_vertex hex_verts[6] =
-{
-	{ -0.5f, 0.5f, 1.f, 0.f, 0.f },
-	{ 0.5f, -0.5f, 0.f, 0.f, 1.f },
-	{ -0.5f, -0.5f, 0.f, 0.f, 0.f },
-	{ -0.5f, 0.5f, 1.f, 0.f, 0.f },
-	{ 0.5f, 0.5f, 0.f, 1.f, 0.f },
-	{ 0.5f, -0.5f, 0.f, 0.f, 1.f }
-};
-
-wrapper::color color_info[4] =
+wrapper::color color_info_sq[4] =
 {
 	{ 1.f, 0.f, 0.f, 1.f },
 	{ 0.f, 1.f, 0.f, 1.f },
@@ -33,16 +33,27 @@ wrapper::color color_info[4] =
 	{ 0.f, 0.f, 0.f, 1.f }
 };
 
+wrapper::color color_info_tri[3] =
+{
+	{ 1.f, 0.f, 0.f, 1.f },
+	{ 0.f, 1.f, 0.f, 1.f },
+	{ 0.f, 0.f, 1.f, 1.f }
+};
+
 VOID draw()
 {
 	//create the individual buffers
 
-	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(-0.5f, -0.5f, 1.f, 1.f, 1.f, color_info, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
-	dx_11_buffer dx_tr_buf = dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
+	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(-0.5f, -0.5f, 1.f, 1.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
+	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(-1.f, 0.f, -0.75f, 1.f, -0.5f, 0.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
 	
 	//draw each individual buffer
-	dx11.draw_render_item(dx_tr_buf);
+	dx11.draw_render_item(dx_tri_buf);
 	dx11.draw_render_item(dx_sq_buf);
+
+	//clear the render buffers of the created items, do this so we don't have a memory leak
+	dx11.clear_render_buffer(dx_sq_buf);
+	dx11.clear_render_buffer(dx_tri_buf);
 }
 
 //wndproc for stuffz

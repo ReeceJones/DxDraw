@@ -83,7 +83,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	ID3D10Blob* ptr_error;
 
 	//compile the vertex shader from memory
-	if (FAILED(D3DCompile((DWORD*)vertex_shader, sizeof(vertex_shader), "shader", NULL, NULL, "main", "vs_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
+	if (FAILED(D3DCompile((DWORD*)vertex_shader, sizeof(vertex_shader), "vertex_shader", NULL, NULL, "main", "vs_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
 		//what went wrong?
 		helpers::err_print("Could not compile vertex shader in memory!", helpers::ERR_ERROR);
@@ -139,7 +139,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 		"}";
 
 	//compile the pixel shader
-	if (FAILED(D3DCompile((DWORD*)pixel_shader, sizeof(pixel_shader), "shader", NULL, NULL, "main", "ps_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
+	if (FAILED(D3DCompile((DWORD*)pixel_shader, sizeof(pixel_shader), "pixel_shader", NULL, NULL, "main", "ps_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
 		helpers::err_print("Could not compile pixel shader in memory!", helpers::ERR_ERROR);
 		ptr_error->Release();
