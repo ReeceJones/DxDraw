@@ -4,7 +4,7 @@
 
 //for calling begin and end frame by wrapper
 //TODO: move to wrapper file (needs to be made first)
-typedef VOID(__fastcall* FRAMEPROC)(void);
+typedef VOID(__stdcall* FRAMEPROC)(void);
 
 struct dx_vertex
 {
