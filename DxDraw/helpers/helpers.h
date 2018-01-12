@@ -11,7 +11,7 @@
 namespace helpers
 {
 	//print a string then continue to the next line
-	void str_println(const char* str, ...);
+	extern void str_println(const char* str, ...);
 
 	//different types of errors
 	enum error : int
@@ -23,13 +23,13 @@ namespace helpers
 	};
 
 	//change the output color of the console
-	void change_color(WORD w_color);
+	extern void change_color(WORD w_color);
 	
 	//print an error
-	void err_print(const char* str_err, error err, ...);
+	extern void err_print(const char* str_err, error err, ...);
 
 	//create a window to output to
-	BOOL create_window(HINSTANCE hInst, int nCmd, LPCSTR str_classname, LPCSTR str_windowname, int width, int height, HWND *hWnd_out, WNDPROC wnd_proc);
+	extern BOOL create_window(HINSTANCE hInst, int nCmd, LPCSTR str_classname, LPCSTR str_windowname, int width, int height, HWND *hWnd_out, WNDPROC wnd_proc);
 
-	void last_error();
+	extern void last_error();
 }

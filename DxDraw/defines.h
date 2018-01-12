@@ -10,3 +10,6 @@
 
 //vsync applied to every nth frame
 #define VSYNC_NFRAME 0
+
+//rendering settings
+#define CIRCLE_SEGMENTS 50

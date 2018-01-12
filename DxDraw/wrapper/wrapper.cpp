@@ -30,5 +30,22 @@ namespace wrapper
 
 			return dx_renderer.create_render_item(vertices, sizeof(vertices), 3);
 		}
+
+		dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, float width, color color_info[2], dx_11_renderer dx_renderer)
+		{
+			dx_vertex vertices[6] =
+			{
+				{ x1, y1, z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a },
+				{ x2, y2, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a },
+				{ x2, y2 + width, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a },
+
+				{ x2, y2 + width, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a },
+				{ x1, y1 + width, z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a },
+				{ x1, y1, z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a }
+			};
+
+			return dx_renderer.create_render_item(vertices, sizeof(vertices), 6);
+		}
+
 	}
 }

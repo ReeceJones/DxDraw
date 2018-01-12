@@ -73,17 +73,29 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	"Output main(Input input)"
 	"{"
 	"	Output output;"
-	"	output.position = float4(input.position.x, input.position.y, input.position.z, 1);"
+	"	output.position = float4(((input.position.x - (%f / 2)) / (%f / 2)), -((input.position.y - (%f / 2)) / (%f / 2)), input.position.z, 1);"
 	"	output.color = input.color;"
 	"	return output;"
 	"}";
+	/*
+	now, because d3d11 is obnoxious we have to convert some coordinates
+	to convert a coordinate to a point(?) (uses left-hand coordinate system)
+		-Because the coordinate is in relation to the top left we:
+			>dimension = height or width
+			>subtract half of the dimension, then divide that by half the dimension
+			>for the y coordinate you have to take the opposite of the value so that it is the correct dimension
+	*/
+	//WE CAN FINALLY USE COORDINATES. WE DID IT
+	//downside though: if resolution changes we have to recompile shaders or else it breaks...TODO: work
+	char vertex_buf[0xffff];
+	sprintf_s(vertex_buf, vertex_shader, (FLOAT)WINDOW_WIDTH, (FLOAT)WINDOW_WIDTH, (FLOAT)WINDOW_HEIGHT, (FLOAT)WINDOW_HEIGHT);
 
 	//initialize some blobs
 	ID3D10Blob* ptr_blob;
 	ID3D10Blob* ptr_error;
 
 	//compile the vertex shader from memory
-	if (FAILED(D3DCompile((DWORD*)vertex_shader, sizeof(vertex_shader), "vertex_shader", NULL, NULL, "main", "vs_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
+	if (FAILED(D3DCompile((DWORD*)vertex_buf, sizeof(vertex_buf), "vertex_shader", NULL, NULL, "main", "vs_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
 		//what went wrong?
 		helpers::err_print("Could not compile vertex shader in memory!", helpers::ERR_ERROR);
@@ -137,7 +149,6 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 		"{"
 		"	return float4(input.color.r, input.color.g, input.color.b, input.color.a);"
 		"}";
-
 	//compile the pixel shader
 	if (FAILED(D3DCompile((DWORD*)pixel_shader, sizeof(pixel_shader), "pixel_shader", NULL, NULL, "main", "ps_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
@@ -172,7 +183,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 
 
 	//create the rasterizer
-	CD3D11_RASTERIZER_DESC rasterizer_desc = CD3D11_RASTERIZER_DESC(D3D11_FILL_SOLID, D3D11_CULL_NONE, 0, 0, 0, 0, 0, 0, 0, 0);
+	CD3D11_RASTERIZER_DESC rasterizer_desc = CD3D11_RASTERIZER_DESC(D3D11_FILL_SOLID, D3D11_CULL_NONE, 0, 0, 0, 0, 0, 0, TRUE, TRUE);
 
 	if (FAILED(this->ptr_d3d11device->CreateRasterizerState(&rasterizer_desc, &this->ptr_rasterizerstate)))
 	{

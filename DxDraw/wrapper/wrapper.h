@@ -4,6 +4,9 @@
 
 #include "..\DirectX11\Dx11Renderer.h"
 
+#include <vector>
+
+//TODODODODODODOODODODOD: BEFORE CONTINUING CONVERT DECIMALS TO COORDINATES SO WE DONT HAVE THESE TRASH WONKY SHAPES
 namespace wrapper
 {
 	struct color
@@ -28,5 +31,12 @@ namespace wrapper
 		-index 2: point 3
 		*/
 		extern dx_11_buffer create_triangle(float x1, float y1, float x2, float y2, float x3, float y3, float z, color color_info[3], dx_11_renderer dx_renderer);
+
+		/*
+		color_info:
+		-index 0: point 1
+		-index 1: point 2
+		*/
+		extern dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, float width, color color_info[2], dx_11_renderer dx_renderer);
 	}
 }

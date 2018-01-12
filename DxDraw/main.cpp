@@ -1,3 +1,6 @@
+
+#define WIN32_LEAN_AND_MEAN
+
 #include "helpers\helpers.h"
 #include "DirectX11\Dx11Renderer.h"
 #include "defines.h"
@@ -40,20 +43,29 @@ wrapper::color color_info_tri[3] =
 	{ 0.f, 0.f, 1.f, 1.f }
 };
 
+wrapper::color color_info_duo[2] = 
+{
+	{1.f, 0.f, 0.f, 1.f},
+	{0.f, 1.f, 0.f, 1.f}
+};
+
 VOID draw()
 {
 	//create the individual buffers
 
-	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(-0.5f, -0.5f, 1.f, 1.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
-	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(-1.f, 0.f, -0.75f, 1.f, -0.5f, 0.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
+	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(500.f, 500.f, 100.f, 100.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
+	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
+	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, 10.f, color_info_duo, dx11);
 	
 	//draw each individual buffer
 	dx11.draw_render_item(dx_tri_buf);
 	dx11.draw_render_item(dx_sq_buf);
+	dx11.draw_render_item(dx_ln_buf);
 
 	//clear the render buffers of the created items, do this so we don't have a memory leak
 	dx11.clear_render_buffer(dx_sq_buf);
 	dx11.clear_render_buffer(dx_tri_buf);
+	dx11.clear_render_buffer(dx_ln_buf);
 }
 
 //wndproc for stuffz
@@ -81,7 +93,7 @@ int main()
 
 	HINSTANCE hInst = GetModuleHandle(NULL);
 	HWND out_hwnd;
-	if (helpers::create_window(hInst, SW_SHOWNORMAL /*nCmd: https://msdn.microsoft.com/en-us/library/windows/desktop/ms633559(v=vs.85).aspx */, "some classname", "some windowname", WINDOW_WIDTH, WINDOW_HEIGHT, &out_hwnd, WndProc))
+	if (helpers::create_window(hInst, SW_SHOWNORMAL /*nCmd's: https://msdn.microsoft.com/en-us/library/windows/desktop/ms633559(v=vs.85).aspx */, "some classname", "some windowname", WINDOW_WIDTH, WINDOW_HEIGHT, &out_hwnd, WndProc))
 	{
 		MSG msg; //declare the message
 		ZeroMemory(&msg, sizeof(MSG)); //initialize the msg
@@ -101,7 +113,10 @@ int main()
 			}
 		}
 	}
-	system("pause");
 
+	//having to press a key is annoying and too much work. I didn't type this project, I used my brain and it just appeared out of nowhere
+	#ifdef _DEBUG 
+		system("pause");
+	#endif
 	return EXIT_SUCCESS;
 }
