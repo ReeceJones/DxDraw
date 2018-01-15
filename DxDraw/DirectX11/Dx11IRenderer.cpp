@@ -271,7 +271,7 @@ ID3D11DeviceContext* dx_11_renderer::get_ptr_d3d11devicecontext()
 	return this->ptr_d3d11devicecontext;
 }
 
-dx_11_buffer dx_11_renderer::create_render_item(dx_vertex* verts, size_t vert_size, size_t num_points)
+dx_11_buffer dx_11_renderer::create_render_item(dx_vertex* verts, size_t vert_size, size_t num_points, D3D11_PRIMITIVE_TOPOLOGY topology)
 {
 	//create a vertex buffer with the vertices given to us
 	CD3D11_BUFFER_DESC vertex_buffer_desc = CD3D11_BUFFER_DESC((UINT)vert_size, D3D11_BIND_VERTEX_BUFFER);
@@ -284,6 +284,7 @@ dx_11_buffer dx_11_renderer::create_render_item(dx_vertex* verts, size_t vert_si
 
 	//used for rendering the item
 	dx_buffer.points = num_points;
+	dx_buffer.topology_type = topology;
 
 	return dx_buffer;
 }
@@ -294,6 +295,9 @@ VOID dx_11_renderer::draw_render_item(dx_11_buffer dx_buffer)
 	UINT stride = sizeof(dx_vertex);
 	UINT offset = 0;
 	this->ptr_d3d11devicecontext->IASetVertexBuffers(0, 1, &dx_buffer.ptr_buffer, &stride, &offset);
+	
+	//type of topology so that we know how to draw shape
+	this->ptr_d3d11devicecontext->IASetPrimitiveTopology(dx_buffer.topology_type);
 
 	//draw the buffer
 	this->ptr_d3d11devicecontext->Draw((UINT)dx_buffer.points, 0);

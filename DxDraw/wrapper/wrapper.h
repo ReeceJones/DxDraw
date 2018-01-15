@@ -6,6 +6,13 @@
 
 #include <vector>
 
+enum CIRCLE_MODE : int
+{
+	CIRCLE_SOLID = 0, 
+	CIRCLE_LINE,
+	CIRCLE_WEIRD
+};
+
 //TODODODODODODOODODODOD: BEFORE CONTINUING CONVERT DECIMALS TO COORDINATES SO WE DONT HAVE THESE TRASH WONKY SHAPES
 namespace wrapper
 {
@@ -37,6 +44,13 @@ namespace wrapper
 		-index 0: point 1
 		-index 1: point 2
 		*/
-		extern dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, float width, color color_info[2], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, color color_info[2], dx_11_renderer dx_renderer);
+
+		/*
+		color_info:
+		-index 0: point 1
+		-index 1: point 2
+		*/
+		extern dx_11_buffer create_circle(float x1, float y1, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer);
 	}
 }

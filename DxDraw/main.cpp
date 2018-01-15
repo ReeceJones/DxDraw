@@ -55,17 +55,20 @@ VOID draw()
 
 	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(500.f, 500.f, 100.f, 100.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
 	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
-	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, 10.f, color_info_duo, dx11);
+	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, color_info_duo, dx11);
+	dx_11_buffer dx_crc_buf = wrapper::D3D11::create_circle(700.f, 500.f, 1.f, 50.f, CIRCLE_SOLID, color_info_duo, dx11);
 	
 	//draw each individual buffer
 	dx11.draw_render_item(dx_tri_buf);
 	dx11.draw_render_item(dx_sq_buf);
 	dx11.draw_render_item(dx_ln_buf);
+	dx11.draw_render_item(dx_crc_buf);
 
 	//clear the render buffers of the created items, do this so we don't have a memory leak
 	dx11.clear_render_buffer(dx_sq_buf);
 	dx11.clear_render_buffer(dx_tri_buf);
 	dx11.clear_render_buffer(dx_ln_buf);
+	dx11.clear_render_buffer(dx_crc_buf);
 }
 
 //wndproc for stuffz

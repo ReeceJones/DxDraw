@@ -15,6 +15,7 @@ struct dx_11_buffer
 {
 	ID3D11Buffer* ptr_buffer;
 	size_t points;
+	D3D11_PRIMITIVE_TOPOLOGY topology_type;
 };
 
 //
@@ -37,7 +38,7 @@ public:
 	ID3D11DeviceContext* get_ptr_d3d11devicecontext();
 
 	//create an item to be rendered, in order to render it call draw_render_item
-	dx_11_buffer create_render_item(dx_vertex* verts, size_t vert_size, size_t num_points);
+	dx_11_buffer create_render_item(dx_vertex* verts, size_t vert_size, size_t num_points, D3D11_PRIMITIVE_TOPOLOGY topology);
 
 	//draw a shape
 	VOID draw_render_item(dx_11_buffer dx_buffer);
