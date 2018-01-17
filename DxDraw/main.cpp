@@ -104,6 +104,7 @@ int main()
 		//initialize our direct3d helper
 		if (dx11.initialize(out_hwnd, draw))
 		{
+			fps->enable_fps_logging();
 			fps->reset_timer();
 			while (msg.message != WM_QUIT) //make sure that the application is not quit yets
 			{
@@ -116,8 +117,6 @@ int main()
 				//begin and end frame
 				dx11.draw_loop();
 				fps->update_frame();
-
-				helpers::err_print(helpers::ERR_INFO, "FPS: %i", fps->get_fps());
 				//printf("frames: %i\n", fps.get_fps());
 			}
 		}
