@@ -25,11 +25,11 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	//check if we successfully created the device and swap chain
 	if (FAILED(hRes))
 	{
-		helpers::err_print("Could not create D3D11Device and DXGI_SWAP_CHAIN_DESC!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not create D3D11Device and DXGI_SWAP_CHAIN_DESC!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully created D3D11Device and DXGI_SWAP_CHAIN_DESC!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created D3D11Device and DXGI_SWAP_CHAIN_DESC!");
 	
 	//create the render target
 	ID3D11Texture2D* textbuf;
@@ -45,11 +45,11 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	}
 	else
 	{
-		helpers::err_print("null texture buffer!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "null texture buffer!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully creatde Render Target!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully creatde Render Target!");
 
 	//use this to make it a bit easier to control framez
 	this->draw_frame = fn_Draw;
@@ -98,7 +98,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	if (FAILED(D3DCompile((DWORD*)vertex_buf, sizeof(vertex_buf), "vertex_shader", NULL, NULL, "main", "vs_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
 		//what went wrong?
-		helpers::err_print("Could not compile vertex shader in memory!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not compile vertex shader in memory!");
 		helpers::last_error();
 		return FALSE;
 	}
@@ -106,7 +106,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	//create the vertex shader
 	if (FAILED(this->ptr_d3d11device->CreateVertexShader(/*vsData.data()*/ptr_blob->GetBufferPointer(), /*vsData.size()*/ptr_blob->GetBufferSize(), nullptr, &this->ptr_vertexshader)))
 	{
-		helpers::err_print("Could not create vertex shader!", helpers::ERR_CRITICAL);
+		helpers::err_print(helpers::ERR_CRITICAL, "Could not create vertex shader!");
 		ptr_blob->Release();
 		return FALSE;
 	}
@@ -120,11 +120,11 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 
 	if (FAILED(this->ptr_d3d11device->CreateInputLayout(input_layout, 2, /*vertex data*/ptr_blob->GetBufferPointer(), ptr_blob->GetBufferSize(), &this->ptr_inputlayout)))
 	{
-		helpers::err_print("Could not create input layout!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not create input layout!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully created input layout!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created input layout!");
 	//clean up our blob for reuse
 
 	//make sure that we don't release a nullptr, will cause exception
@@ -152,7 +152,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	//compile the pixel shader
 	if (FAILED(D3DCompile((DWORD*)pixel_shader, sizeof(pixel_shader), "pixel_shader", NULL, NULL, "main", "ps_5_0", NULL, NULL, &ptr_blob, &ptr_error)))
 	{
-		helpers::err_print("Could not compile pixel shader in memory!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not compile pixel shader in memory!");
 		ptr_error->Release();
 		helpers::last_error();
 		return FALSE;
@@ -161,7 +161,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	//create the pixel shader for use
 	if (FAILED(this->ptr_d3d11device->CreatePixelShader(/*pixel data*//*psData.data()*/ptr_blob->GetBufferPointer(), /*data size*//*psData.size()*/ptr_blob->GetBufferSize(), nullptr, &this->ptr_pixelshader)))
 	{
-		helpers::err_print("Could not create pixel shader!", helpers::ERR_CRITICAL);
+		helpers::err_print(helpers::ERR_CRITICAL, "Could not create pixel shader!");
 		ptr_blob->Release();
 		return FALSE;
 	}
@@ -177,7 +177,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	ZeroMemory(&ptr_blob, sizeof(ID3D10Blob));
 	ZeroMemory(&ptr_error, sizeof(ID3D10Blob));
 
-	helpers::err_print("Successfully created shaders!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created shaders!");
 
 	//create the input layout, used for communication with the shaders
 
@@ -187,22 +187,22 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 
 	if (FAILED(this->ptr_d3d11device->CreateRasterizerState(&rasterizer_desc, &this->ptr_rasterizerstate)))
 	{
-		helpers::err_print("Could not create rasterizer state!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not create rasterizer state!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully created raterizer state!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created raterizer state!");
 
 	//create the blender
 	CD3D11_BLEND_DESC blend_desc = CD3D11_BLEND_DESC(CD3D11_DEFAULT());
 
 	if (FAILED(this->ptr_d3d11device->CreateBlendState(&blend_desc, &this->ptr_blendstate)))
 	{
-		helpers::err_print("Could not create blend state!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not create blend state!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully created blend state!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created blend state!");
 
 	//create the depthstencil, can be used for better detail on certain things
 	CD3D11_DEPTH_STENCIL_DESC depthstencil_desc = CD3D11_DEPTH_STENCIL_DESC(FALSE, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_LESS,
@@ -212,14 +212,14 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 
 	if (FAILED(this->ptr_d3d11device->CreateDepthStencilState(&depthstencil_desc, &this->ptr_depthstencilstate)))
 	{
-		helpers::err_print("Could not create depth stencil state!", helpers::ERR_ERROR);
+		helpers::err_print(helpers::ERR_ERROR, "Could not create depth stencil state!");
 		return FALSE;
 	}
 
-	helpers::err_print("Successfully created depth stencil state!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully created depth stencil state!");
 
 	//it worked!!!
-	helpers::err_print("Successfully initialized class: dx_11_renderer!", helpers::ERR_INFO);
+	helpers::err_print(helpers::ERR_INFO, "Successfully initialized class: dx_11_renderer!");
 	return TRUE;
 }
 

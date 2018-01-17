@@ -5,8 +5,10 @@
 #include "DirectX11\Dx11Renderer.h"
 #include "defines.h"
 #include "wrapper\wrapper.h"
+#include "tools\fps_calculation.h"
 
 dx_11_renderer dx11;
+fps_calculator* fps = new fps_calculator();
 
 //dx_vertex tri_verts[] =
 //{
@@ -52,7 +54,6 @@ wrapper::color color_info_duo[2] =
 VOID draw()
 {
 	//create the individual buffers
-
 	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(500.f, 500.f, 100.f, 100.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
 	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
 	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, color_info_duo, dx11);
@@ -103,6 +104,7 @@ int main()
 		//initialize our direct3d helper
 		if (dx11.initialize(out_hwnd, draw))
 		{
+			fps->reset_timer();
 			while (msg.message != WM_QUIT) //make sure that the application is not quit yets
 			{
 				while (PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE)) //get the message
@@ -113,6 +115,10 @@ int main()
 				//draw here
 				//begin and end frame
 				dx11.draw_loop();
+				fps->update_frame();
+
+				helpers::err_print(helpers::ERR_INFO, "FPS: %i", fps->get_fps());
+				//printf("frames: %i\n", fps.get_fps());
 			}
 		}
 	}

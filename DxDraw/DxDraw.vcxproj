@@ -153,12 +153,14 @@
     <ClCompile Include="DirectX11\Dx11IRenderer.cpp" />
     <ClCompile Include="helpers\helpers.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tools\fps_calculation.cpp" />
     <ClCompile Include="wrapper\wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
     <ClInclude Include="DirectX11\Dx11Renderer.h" />
     <ClInclude Include="helpers\helpers.h" />
+    <ClInclude Include="tools\fps_calculation.h" />
     <ClInclude Include="wrapper\wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -26,7 +26,7 @@ namespace helpers
 		//CloseHandle(hCon);
 	}
 
-	void err_print(const char* str_err, error err, ...)
+	void err_print(error err, const char* str_err, ...)
 	{
 		//array of warning strings
 		const char* str_errs[4] = { "INFO", "WARNING", "ERROR", "CRITICAL ERROR" };
