@@ -51,6 +51,11 @@ wrapper::color color_info_duo[2] =
 	{0.f, 1.f, 0.f, 1.f}
 };
 
+wrapper::color color_info_single[1] = 
+{
+	{1.f, 0.f, 0.f, 1.f}
+};
+
 VOID draw()
 {
 	//create the individual buffers
@@ -58,18 +63,24 @@ VOID draw()
 	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
 	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, color_info_duo, dx11);
 	dx_11_buffer dx_crc_buf = wrapper::D3D11::create_circle(700.f, 500.f, 1.f, 50.f, CIRCLE_SOLID, color_info_duo, dx11);
+	dx_11_buffer dx_pnt_buf = wrapper::D3D11::create_point(1100.f, 500.f, 1.f, color_info_single, dx11);
 	
 	//draw each individual buffer
 	dx11.draw_render_item(dx_tri_buf);
 	dx11.draw_render_item(dx_sq_buf);
 	dx11.draw_render_item(dx_ln_buf);
 	dx11.draw_render_item(dx_crc_buf);
+	dx11.draw_render_item(dx_pnt_buf);
 
 	//clear the render buffers of the created items, do this so we don't have a memory leak
 	dx11.clear_render_buffer(dx_sq_buf);
 	dx11.clear_render_buffer(dx_tri_buf);
 	dx11.clear_render_buffer(dx_ln_buf);
 	dx11.clear_render_buffer(dx_crc_buf);
+	dx11.clear_render_buffer(dx_pnt_buf);
+
+	//calculate fps
+	fps->update_frame();
 }
 
 //wndproc for stuffz
@@ -116,7 +127,6 @@ int main()
 				//draw here
 				//begin and end frame
 				dx11.draw_loop();
-				fps->update_frame();
 				//printf("frames: %i\n", fps.get_fps());
 			}
 		}

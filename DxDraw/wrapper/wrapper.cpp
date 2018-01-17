@@ -42,7 +42,7 @@ namespace wrapper
 			return dx_renderer.create_render_item(vertices, sizeof(vertices), 2, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 		}
 
-		dx_11_buffer create_circle(float x1, float y1, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer)
+		dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer)
 		{
 			//amount of points we need to render
 			const float points = CIRCLE_SEGMENTS * 3;
@@ -54,14 +54,24 @@ namespace wrapper
 			const float pi = 3.14159265358979323;
 
 			for (int i = 0; i < points; i++)
-				circle[i] = { x1 - radius * cos(pi * ((i - 1) / (CIRCLE_SEGMENTS / 2.0f))), y1 - radius * sin(pi * ((i - 1) / (CIRCLE_SEGMENTS / 2.0f))), z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a };//this->CreateVertex(point.x - Radius * cos(flPi * ((i - 1) / (Segments / 2.0f))), point.y - Radius * sin(flPi * ((i - 1) / (Segments / 2.0f))), point.z, 1.f, color, 0.f, 0.f);
+				circle[i] = { x - radius * cos(pi * ((i - 1) / (CIRCLE_SEGMENTS / 2.0f))), y - radius * sin(pi * ((i - 1) / (CIRCLE_SEGMENTS / 2.0f))), z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a };//this->CreateVertex(point.x - Radius * cos(flPi * ((i - 1) / (Segments / 2.0f))), point.y - Radius * sin(flPi * ((i - 1) / (Segments / 2.0f))), point.z, 1.f, color, 0.f, 0.f);
 			
 			//not "circle != CIRCLE_LINE" for future compatability
 			if (circle_mode == CIRCLE_SOLID || circle_mode == CIRCLE_WEIRD)
 				for (int i = 0; i < points; i += 3)
-					circle[i] = { x1, y1, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a };
+					circle[i] = { x, y, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a };
 
 			return dx_renderer.create_render_item(circle, sizeof(circle), points, ((circle_mode == CIRCLE_SOLID) ? D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP : D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP)/*D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP*//*D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP*/);
+		}
+
+		dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer dx_renderer)
+		{
+			dx_vertex vertices[1] =
+			{
+				{ x, y, z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a }
+			};
+
+			return dx_renderer.create_render_item(vertices, sizeof(vertices), 1, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		}
 	}
 }

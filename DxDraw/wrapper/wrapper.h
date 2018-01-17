@@ -51,6 +51,12 @@ namespace wrapper
 		-index 0: point 1
 		-index 1: point 2
 		*/
-		extern dx_11_buffer create_circle(float x1, float y1, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer);
+
+		/*
+		color_info:
+		-index 0: point 1
+		*/
+		extern dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer dx_renderer);
 	}
 }
