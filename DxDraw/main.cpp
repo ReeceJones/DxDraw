@@ -7,7 +7,7 @@
 #include "wrapper\wrapper.h"
 #include "tools\fps_calculation.h"
 
-dx_11_renderer dx11;
+dx_11_renderer* dx11 = new dx_11_renderer();
 fps_calculator* fps = new fps_calculator();
 
 //dx_vertex tri_verts[] =
@@ -32,7 +32,7 @@ fps_calculator* fps = new fps_calculator();
 
 wrapper::color color_info_sq[4] =
 {
-	{ 1.f, 0.f, 0.f, 1.f },
+	{ 1.f, 0.f, 0.f, 0.f },
 	{ 0.f, 1.f, 0.f, 1.f },
 	{ 0.f, 0.f, 1.f, 1.f },
 	{ 0.f, 0.f, 0.f, 1.f }
@@ -59,25 +59,25 @@ wrapper::color color_info_single[1] =
 VOID draw()
 {
 	//create the individual buffers
-	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(500.f, 500.f, 100.f, 100.f, 1.f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
-	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 1.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
-	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 1.f, color_info_duo, dx11);
-	dx_11_buffer dx_crc_buf = wrapper::D3D11::create_circle(700.f, 500.f, 1.f, 50.f, CIRCLE_SOLID, color_info_duo, dx11);
-	dx_11_buffer dx_pnt_buf = wrapper::D3D11::create_point(1100.f, 500.f, 1.f, color_info_single, dx11);
+	dx_11_buffer dx_sq_buf = wrapper::D3D11::create_square(100.f, 100.f, 100.f, 100.f, 0.5f, color_info_sq, dx11);//dx11.create_render_item(hex_verts, sizeof(hex_verts), 6);
+	dx_11_buffer dx_tri_buf = wrapper::D3D11::create_triangle(0.f, 200.f, 300.f, 0.f, 600.f, 200.f, 0.f, color_info_tri, dx11); //dx11.create_render_item(tri_verts, sizeof(tri_verts), 3);
+	dx_11_buffer dx_ln_buf = wrapper::D3D11::create_line(100.f, 700.f, 1000.f, 700.f, 0.f, color_info_duo, dx11);
+	dx_11_buffer dx_crc_buf = wrapper::D3D11::create_circle(700.f, 500.f, 0.f, 50.f, CIRCLE_SOLID, color_info_duo, dx11);
+	dx_11_buffer dx_pnt_buf = wrapper::D3D11::create_point(1100.f, 500.f, 0.f, color_info_single, dx11);
 	
 	//draw each individual buffer
-	dx11.draw_render_item(dx_tri_buf);
-	dx11.draw_render_item(dx_sq_buf);
-	dx11.draw_render_item(dx_ln_buf);
-	dx11.draw_render_item(dx_crc_buf);
-	dx11.draw_render_item(dx_pnt_buf);
+	dx11->draw_render_item(dx_tri_buf);
+	dx11->draw_render_item(dx_sq_buf);
+	dx11->draw_render_item(dx_ln_buf);
+	dx11->draw_render_item(dx_crc_buf);
+	dx11->draw_render_item(dx_pnt_buf);
 
 	//clear the render buffers of the created items, do this so we don't have a memory leak
-	dx11.clear_render_buffer(dx_sq_buf);
-	dx11.clear_render_buffer(dx_tri_buf);
-	dx11.clear_render_buffer(dx_ln_buf);
-	dx11.clear_render_buffer(dx_crc_buf);
-	dx11.clear_render_buffer(dx_pnt_buf);
+	dx11->clear_render_buffer(dx_sq_buf);
+	dx11->clear_render_buffer(dx_tri_buf);
+	dx11->clear_render_buffer(dx_ln_buf);
+	dx11->clear_render_buffer(dx_crc_buf);
+	dx11->clear_render_buffer(dx_pnt_buf);
 
 	//calculate fps
 	fps->update_frame();
@@ -113,7 +113,7 @@ int main()
 		MSG msg; //declare the message
 		ZeroMemory(&msg, sizeof(MSG)); //initialize the msg
 		//initialize our direct3d helper
-		if (dx11.initialize(out_hwnd, draw))
+		if (dx11->initialize(out_hwnd, draw))
 		{
 			fps->enable_fps_logging();
 			fps->reset_timer();
@@ -126,7 +126,7 @@ int main()
 				}
 				//draw here
 				//begin and end frame
-				dx11.draw_loop();
+				dx11->draw_loop();
 				//printf("frames: %i\n", fps.get_fps());
 			}
 		}

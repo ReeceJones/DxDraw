@@ -9,6 +9,20 @@ dx_11_renderer::dx_11_renderer()
 	//do nothing
 }
 
+dx_11_renderer::~dx_11_renderer()
+{
+	ptr_d3d11device->Release();
+	ptr_swapchain->Release();
+	ptr_d3d11devicecontext->Release();
+	ptr_rendertarget->Release();
+	ptr_vertexshader->Release();
+	ptr_pixelshader->Release();
+	ptr_inputlayout->Release();
+	ptr_rasterizerstate->Release();
+	ptr_blendstate->Release();
+	ptr_depthstencilstate->Release();
+}
+
 BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 {
 	//create swap chain
@@ -18,7 +32,8 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	dxgi_swap_chain_desc.OutputWindow = hWnd;
 	dxgi_swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	dxgi_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	dxgi_swap_chain_desc.SampleDesc.Count = 1;
+	dxgi_swap_chain_desc.SampleDesc.Count = MULTISAMPLE_LEVEL;
+	dxgi_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	HRESULT hRes = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, NULL, nullptr,
 		NULL, D3D11_SDK_VERSION, &dxgi_swap_chain_desc, &this->ptr_swapchain, &this->ptr_d3d11device,
 		nullptr, &this->ptr_d3d11devicecontext);
@@ -183,7 +198,7 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 
 
 	//create the rasterizer
-	CD3D11_RASTERIZER_DESC rasterizer_desc = CD3D11_RASTERIZER_DESC(D3D11_FILL_SOLID, D3D11_CULL_NONE, 0, 0, 0, 0, 0, 0, TRUE, TRUE);
+	CD3D11_RASTERIZER_DESC rasterizer_desc = CD3D11_RASTERIZER_DESC(D3D11_FILL_SOLID, D3D11_CULL_NONE, 0, 0, 0, 0, 0, 0, MULTISAMPLE, ANTIALIAS);
 
 	if (FAILED(this->ptr_d3d11device->CreateRasterizerState(&rasterizer_desc, &this->ptr_rasterizerstate)))
 	{
@@ -205,10 +220,21 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	helpers::err_print(helpers::ERR_INFO, "Successfully created blend state!");
 
 	//create the depthstencil, can be used for better detail on certain things
-	CD3D11_DEPTH_STENCIL_DESC depthstencil_desc = CD3D11_DEPTH_STENCIL_DESC(FALSE, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_LESS,
-		FALSE, D3D11_DEFAULT_STENCIL_READ_MASK, D3D11_DEFAULT_STENCIL_WRITE_MASK,
-		D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS,
-		D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS);
+	D3D11_DEPTH_STENCIL_DESC depthstencil_desc;
+	depthstencil_desc.DepthEnable = DEPTH_ENABLE;
+	depthstencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthstencil_desc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthstencil_desc.StencilEnable = FALSE;
+	depthstencil_desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	depthstencil_desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	depthstencil_desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthstencil_desc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthstencil_desc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	if (FAILED(this->ptr_d3d11device->CreateDepthStencilState(&depthstencil_desc, &this->ptr_depthstencilstate)))
 	{
@@ -217,6 +243,41 @@ BOOL dx_11_renderer::initialize(HWND hWnd, FRAMEPROC fn_Draw)
 	}
 
 	helpers::err_print(helpers::ERR_INFO, "Successfully created depth stencil state!");
+
+	D3D11_TEXTURE2D_DESC texture2d_desc;
+	ZeroMemory(&texture2d_desc, sizeof(texture2d_desc));
+	texture2d_desc.Width = this->ptr_textdesc.Width;
+	texture2d_desc.Height = this->ptr_textdesc.Height;
+	texture2d_desc.MipLevels = 1;
+	texture2d_desc.ArraySize = 1;
+	texture2d_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	texture2d_desc.SampleDesc.Count = MULTISAMPLE_LEVEL;
+	texture2d_desc.SampleDesc.Quality = 0;
+	texture2d_desc.Usage = D3D11_USAGE_DEFAULT;
+	texture2d_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	texture2d_desc.CPUAccessFlags = 0;
+	texture2d_desc.MiscFlags = 0;
+
+	if (FAILED(this->ptr_d3d11device->CreateTexture2D(&texture2d_desc, NULL, &this->ptr_texture2d)))
+	{
+		helpers::err_print(helpers::ERR_ERROR, "Could not create texture2d desc!");
+		return FALSE;
+	}
+
+	helpers::err_print(helpers::ERR_INFO, "Successfully created texture2d desc!");
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc;
+	ZeroMemory(&depth_stencil_view_desc, sizeof(depth_stencil_view_desc));
+	depth_stencil_view_desc.Format = texture2d_desc.Format;
+	depth_stencil_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	depth_stencil_view_desc.Texture2D.MipSlice = 0;
+	
+
+	if (FAILED(this->ptr_d3d11device->CreateDepthStencilView(this->ptr_texture2d, &depth_stencil_view_desc, &this->ptr_depthstencilview)))
+	{
+			helpers::err_print(helpers::ERR_ERROR, "Could not create texture2d desc!");
+			return FALSE;
+	}
 
 	//it worked!!!
 	helpers::err_print(helpers::ERR_INFO, "Successfully initialized class: dx_11_renderer!");
@@ -233,14 +294,22 @@ VOID dx_11_renderer::draw_loop()
 VOID dx_11_renderer::begin_frame()
 {
 	//set render target
-	this->ptr_d3d11devicecontext->OMSetRenderTargets(1, &this->ptr_rendertarget, nullptr);
+	this->ptr_d3d11devicecontext->OMSetRenderTargets(1, &this->ptr_rendertarget, this->ptr_depthstencilview);
 	//set viewport
-	CD3D11_VIEWPORT d3d11_viewport = CD3D11_VIEWPORT(0.f, 0.f, (FLOAT)this->ptr_textdesc.Width, (FLOAT)this->ptr_textdesc.Height);
+	D3D11_VIEWPORT d3d11_viewport;
+	d3d11_viewport.MinDepth = 0.f;
+	d3d11_viewport.MaxDepth = 1.f;
+	d3d11_viewport.TopLeftX = 0.f;
+	d3d11_viewport.TopLeftY = 0.f;
+	d3d11_viewport.Width = (FLOAT)this->ptr_textdesc.Width;
+	d3d11_viewport.Height = (FLOAT)this->ptr_textdesc.Height;
+
 	this->ptr_d3d11devicecontext->RSSetViewports(1, &d3d11_viewport);
 
 	//clear screen with the backbuffer, and color it
 	const float rgba[4] = { 0.2f, 0.2f, 0.2f, 1.f };
 	this->ptr_d3d11devicecontext->ClearRenderTargetView(this->ptr_rendertarget, rgba);
+	this->ptr_d3d11devicecontext->ClearDepthStencilView(this->ptr_depthstencilview, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 
 	/*MOVED FROM PER-SHAPE DRAW*/

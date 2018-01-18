@@ -4,7 +4,7 @@ namespace wrapper
 {
 	namespace D3D11
 	{
-		dx_11_buffer create_square(float x, float y, float width, float height, float z,  color color_info[4], dx_11_renderer dx_renderer)
+		dx_11_buffer create_square(float x, float y, float width, float height, float z,  color color_info[4], dx_11_renderer* dx_renderer)
 		{
 			dx_vertex vertices[6] =
 			{
@@ -16,10 +16,10 @@ namespace wrapper
 				{ x + width, y, z, color_info[2].r, color_info[2].g, color_info[2].b, color_info[2].a }
 			};
 
-			return dx_renderer.create_render_item(vertices, sizeof(vertices), 6, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			return dx_renderer->create_render_item(vertices, sizeof(vertices), 6, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		dx_11_buffer create_triangle(float x1, float y1, float x2, float y2, float x3, float y3, float z, color color_info[3], dx_11_renderer dx_renderer)
+		dx_11_buffer create_triangle(float x1, float y1, float x2, float y2, float x3, float y3, float z, color color_info[3], dx_11_renderer* dx_renderer)
 		{
 			dx_vertex vertices[3] = 
 			{
@@ -28,10 +28,10 @@ namespace wrapper
 				{ x3, y3, z, color_info[2].r, color_info[2].g, color_info[2].b, color_info[2].a },
 			};
 
-			return dx_renderer.create_render_item(vertices, sizeof(vertices), 3, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			return dx_renderer->create_render_item(vertices, sizeof(vertices), 3, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		}
 
-		dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, color color_info[2], dx_11_renderer dx_renderer)
+		dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, color color_info[2], dx_11_renderer* dx_renderer)
 		{
 			dx_vertex vertices[2] =
 			{
@@ -39,10 +39,10 @@ namespace wrapper
 				{ x2, y2, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a }
 			};
 
-			return dx_renderer.create_render_item(vertices, sizeof(vertices), 2, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+			return dx_renderer->create_render_item(vertices, sizeof(vertices), 2, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 		}
 
-		dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer)
+		dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer* dx_renderer)
 		{
 			//amount of points we need to render
 			const float points = CIRCLE_SEGMENTS * 3;
@@ -61,17 +61,17 @@ namespace wrapper
 				for (int i = 0; i < points; i += 3)
 					circle[i] = { x, y, z, color_info[1].r, color_info[1].g, color_info[1].b, color_info[1].a };
 
-			return dx_renderer.create_render_item(circle, sizeof(circle), points, ((circle_mode == CIRCLE_SOLID) ? D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP : D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP)/*D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP*//*D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP*/);
+			return dx_renderer->create_render_item(circle, sizeof(circle), points, ((circle_mode == CIRCLE_SOLID) ? D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP : D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP)/*D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP*//*D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP*/);
 		}
 
-		dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer dx_renderer)
+		dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer* dx_renderer)
 		{
 			dx_vertex vertices[1] =
 			{
 				{ x, y, z, color_info[0].r, color_info[0].g, color_info[0].b, color_info[0].a }
 			};
 
-			return dx_renderer.create_render_item(vertices, sizeof(vertices), 1, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+			return dx_renderer->create_render_item(vertices, sizeof(vertices), 1, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 		}
 	}
 }

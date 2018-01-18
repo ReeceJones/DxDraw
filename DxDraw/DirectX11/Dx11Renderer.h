@@ -22,8 +22,9 @@ struct dx_11_buffer
 class dx_11_renderer
 {
 public:
-	//constructor
+	//constructors
 	dx_11_renderer();
+	~dx_11_renderer();
 
 	//initialize the renderer class
 	BOOL initialize(HWND hWnd, FRAMEPROC fn_draw);
@@ -62,6 +63,8 @@ private:
 	ID3D11DeviceContext* ptr_d3d11devicecontext;
 	ID3D11RenderTargetView* ptr_rendertarget;
 	D3D11_TEXTURE2D_DESC ptr_textdesc;
+	ID3D11Texture2D* ptr_texture2d;
+	ID3D11DepthStencilView* ptr_depthstencilview;
 
 	//buffer items
 	//can later be repurposed to store multiple buffers to reduce abstractions with wrapper and increase speed a tiny amount

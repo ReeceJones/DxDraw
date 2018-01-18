@@ -29,7 +29,7 @@ namespace wrapper
 			-index 2: bottom right
 			-index 3: bottom left
 		*/
-		extern dx_11_buffer create_square(float x, float y, float width, float height, float z, color color_info[4], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_square(float x, float y, float width, float height, float z, color color_info[4], dx_11_renderer* dx_renderer);
 
 		/*
 		color_info:
@@ -37,26 +37,26 @@ namespace wrapper
 		-index 1: point 2
 		-index 2: point 3
 		*/
-		extern dx_11_buffer create_triangle(float x1, float y1, float x2, float y2, float x3, float y3, float z, color color_info[3], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_triangle(float x1, float y1, float x2, float y2, float x3, float y3, float z, color color_info[3], dx_11_renderer* dx_renderer);
 
 		/*
 		color_info:
 		-index 0: point 1
 		-index 1: point 2
 		*/
-		extern dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, color color_info[2], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_line(float x1, float y1, float x2, float y2, float z, color color_info[2], dx_11_renderer* dx_renderer);
 
 		/*
 		color_info:
 		-index 0: point 1
 		-index 1: point 2
 		*/
-		extern dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_circle(float x, float y, float z, float radius, CIRCLE_MODE circle_mode, color color_info[2], dx_11_renderer* dx_renderer);
 
 		/*
 		color_info:
 		-index 0: point 1
 		*/
-		extern dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer dx_renderer);
+		extern dx_11_buffer create_point(float x, float y, float z, color color_info[1], dx_11_renderer* dx_renderer);
 	}
 }
